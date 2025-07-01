@@ -1,12 +1,26 @@
 // src/app.ts
 import express, { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
+import authRoutes from './routes/authRoutes';
+import { requireAuth } from './middleware/authMiddleware';
+
 
 const app = express();
 const prisma = new PrismaClient();
 const PORT: number = Number(process.env.PORT) || 3000;
 
-// existing routes
+
+app.use(express.json());
+app.use('/auth', authRoutes);
+
+app.get('/me', requireAuth, (req, res) => {
+  // res.json(...) here returns void
+  res.json({ userId: req.user!.sub, role: req.user!.role });
+});
+
+
+/* TEMPORARY ROUTES */
+
 app.get('/', (req: Request, res: Response) => {
   res.send('Hello, world!');
 });
@@ -21,7 +35,7 @@ app.get('/hello', (req: Request, res: Response) => {
 });
 
 // new: fetch and return all users
-app.get('/users', async (_req: Request, res: Response) => {
+app.get('test/users', async (_req: Request, res: Response) => {
   try {
     const users = await prisma.utilisateur.findMany();
     res.json(users);
@@ -30,6 +44,9 @@ app.get('/users', async (_req: Request, res: Response) => {
     res.status(500).json({ error: 'Unable to load users' });
   }
 });
+
+/* TEMPORARY ROUTES END */
+
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
