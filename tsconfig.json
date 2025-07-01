@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",                       
+    "module": "commonjs",                     
+    "moduleResolution": "node",                // ← important for node_modules lookup
+    "rootDir": ".",                           
+    "outDir": "./dist",                       
+    "strict": true,                           
+    "esModuleInterop": true,                  
+    "allowSyntheticDefaultImports": true,     // ← so you can do `import express from 'express'`
+    "resolveJsonModule": true,                
+    "skipLibCheck": true,                     
+    "forceConsistentCasingInFileNames": true,
+    "typeRoots": [                            // ← where TS will look for `@types/...`
+      "./node_modules/@types",
+      "./types"
+    ]
+  },
+  "include": [
+    "src/app.ts",
+    "src/config/**/*.ts",
+    "models/**/*.ts",
+    "controllers/**/*.ts",
+    "routes/**/*.ts",
+    "middleware/**/*.ts",
+    "services/**/*.ts",
+    "utils/**/*.ts",
+    "types/**/*.d.ts"                        // ← if you add any custom `.d.ts` files
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "tests/**/*.js"
+  ]
+}
