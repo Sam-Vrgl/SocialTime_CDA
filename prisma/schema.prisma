@@ -7,21 +7,36 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model Utilisateur {
-  id_utilisateur    String   @id @default(uuid())
-  pseudo_utilisateur String  @unique
-  nom_utilisateur    String
-  prenom_utilisateur String
-  email_utilisateur  String   @unique
-  mdp_hash           String
-  ddn_utilisateur    DateTime?
-  pp_url_utilisateur String?
-  bio_utilisateur    String?
-  role_utilisateur   Role     @default(USER)
-  created_at         DateTime @default(now())
+model User {
+  id                 String   @id @default(uuid())
+  username           String   @unique
+  firstName          String
+  lastName           String
+  email              String   @unique
+  passwordHash       String
+  birthDate          DateTime?
+  profilePictureUrl  String?
+  bio                String?
+  role               Role     @default(USER)
+  createdAt          DateTime @default(now())
 
-  @@map("utilisateur")     // keep your existing table name
+  posts              Post[]
+
+  @@map("users")
 }
+
+model Post {
+  id           String   @id @default(uuid())
+  description  String
+  created_at   DateTime @default(now())
+  author       User     @relation(fields: [authorId], references: [id])
+  authorId     String
+  gridFsImageId String?
+
+  @@map("posts")
+  @@index([authorId], name: "idx_posts_author")
+}
+
 
 enum Role {
   USER

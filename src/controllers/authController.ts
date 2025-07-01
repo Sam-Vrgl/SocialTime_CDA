@@ -1,6 +1,5 @@
-// src/controllers/authController.ts
 import { Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Role } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import { signToken } from '../utils/jwt';
 
@@ -11,25 +10,30 @@ export async function register(
   req: Request,
   res: Response
 ): Promise<void> {
-  const { pseudo_utilisateur, nom_utilisateur, prenom_utilisateur, email_utilisateur, password } = req.body;
+  const {
+    username,
+    firstName,
+    lastName,
+    email,
+    password
+  } = req.body;
+
   try {
     const hash = await bcrypt.hash(password, SALT_ROUNDS);
-    const user = await prisma.utilisateur.create({
+    const user = await prisma.user.create({
       data: {
-        pseudo_utilisateur,
-        nom_utilisateur,
-        prenom_utilisateur,
-        email_utilisateur,
-        mdp_hash: hash,
-        role_utilisateur: 'USER'
+        username,
+        firstName,
+        lastName,
+        email,
+        passwordHash: hash,
+        role: Role.USER
       }
     });
-    res.status(201).json({ id: user.id_utilisateur });
-    return;
+    res.status(201).json({ id: user.id });
   } catch (err: any) {
-    console.error(err);
+    console.error('Register error:', err);
     res.status(400).json({ error: err.message });
-    return;
   }
 }
 
@@ -37,33 +41,37 @@ export async function login(
   req: Request,
   res: Response
 ): Promise<void> {
-  const { email_utilisateur, password } = req.body;
+  const { email, password } = req.body;
+
   try {
-    const user = await prisma.utilisateur.findUnique({ where: { email_utilisateur } });
+    const user = await prisma.user.findUnique({ where: { email } });
     if (!user) {
       res.status(401).json({ error: 'Invalid credentials' });
       return;
     }
-    const valid = await bcrypt.compare(password, user.mdp_hash);
+
+    const valid = await bcrypt.compare(password, user.passwordHash);
     if (!valid) {
       res.status(401).json({ error: 'Invalid credentials' });
       return;
     }
-    const token = signToken({ sub: user.id_utilisateur, role: user.role_utilisateur });
+
+    const token = signToken({
+      sub:  user.id,
+      role: user.role
+    });
+
     res.json({ token });
-    return;
   } catch (err) {
-    console.error(err);
+    console.error('Login error:', err);
     res.status(500).json({ error: 'Server error' });
-    return;
   }
 }
 
 export function logout(
-  req: Request,
+  _req: Request,
   res: Response
 ): void {
-  // If you were using an http-only cookie you’d clear it here:
-  //    res.clearCookie('token');
-  res.json({ message: 'Logged out. Please delete your token on the client.' });
+  // With stateless JWT you typically just let the client delete the token.
+  res.json({ message: 'Logged out. Please discard your token client-side.' });
 }
