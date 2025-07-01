@@ -5,8 +5,8 @@
   "main": "server.js",
   "scripts": {
     "build": "tsc",
-    "db:up":    "docker-compose up -d db",
-    "db:down":  "docker-compose down",
+    "db:up":    "docker compose up -d db",
+    "db:down":  "docker compose down",
     "migrate":  "prisma migrate dev",
     "generate": "prisma generate",
     "seed":     "ts-node prisma/seed.ts",
