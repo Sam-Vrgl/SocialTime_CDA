@@ -30,6 +30,6 @@
   "exclude": [
     "node_modules",
     "dist",
-    "tests/**/*.js"
+    "src/tests/**/*.js"
   ]
 }

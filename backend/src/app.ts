@@ -5,6 +5,7 @@ import authRoutes from './routes/authRoutes';
 import postsRoutes from './routes/postsRoutes';
 import postImageRoutes from './routes/postImageRoutes';
 import { requireAuth } from './middleware/authMiddleware';
+import { requireAdmin } from './middleware/adminMiddleware';
 
 async function main() {
   // 1) Connect to Mongo/GridFS
@@ -50,6 +51,35 @@ async function main() {
       }
     }
   );
+
+  app.get(
+  '/admin/users',
+  requireAuth,          // verifies JWT and attaches req.user
+  requireAdmin,         // ensures the caller is an ADMIN
+  async (_req: Request, res: Response): Promise<void> => {
+    try {
+      /**  Only expose non-sensitive fields */
+      const users = await prisma.user.findMany({
+        select: {
+          id: true,
+          username: true,
+          firstName: true,
+          lastName: true,
+          email: true,
+          birthDate: true,
+          profilePictureUrl: true,
+          bio: true,
+          role: true,
+          createdAt: true,
+        },
+      });
+      res.json(users);
+    } catch (err) {
+      console.error('Error fetching users:', err);
+      res.status(500).json({ error: 'Server error' });
+    }
+  }
+);
 
   /* TEMPORARY ROUTES */
 
