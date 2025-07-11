@@ -14,15 +14,13 @@ export default function RequireAuth({ children }: RequireAuthProps) {
   const router = useRouter();
 
   useEffect(() => {
-    // if user is explicitly null (i.e. not logged in), redirect
     if (user === null) {
       router.push('/login');
     }
   }, [user, router]);
 
-  // while we’re figuring out auth, or redirecting, show a loader
   if (user === undefined || user === null) {
-    return <p>Loading…</p>;
+    router.replace('/401')
   }
 
   return <>{children}</>;

@@ -39,7 +39,6 @@ export default function HomePage() {
       });
   }, []);
 
-  // sort newest → oldest
   const sortedPosts = [...posts].sort(
     (a, b) =>
       new Date(b.created_at).getTime() -

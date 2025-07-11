@@ -15,7 +15,6 @@ export const AuthContext = createContext<AuthContextValue | undefined>(undefined
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
 
-  // On mount, check if user is already logged in
   useEffect(() => {
     api.get('/auth/me')
       .then(res => setUser(res.data))

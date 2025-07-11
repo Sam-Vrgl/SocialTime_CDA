@@ -9,7 +9,6 @@ import { PrismaClient } from '@prisma/client';
 const router = Router();
 const prisma = new PrismaClient();
 
-// Use in-memory buffer so we can pipe into GridFS
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 8 * 1024 * 1024 }, // 8 MB max
@@ -28,7 +27,6 @@ router.post(
       return;
     }
 
-    // grab the real bucket instance now that connectMongo() has run
     const bucket = getBucket();
 
     const uploadStream = bucket.openUploadStream(req.file.originalname, {
