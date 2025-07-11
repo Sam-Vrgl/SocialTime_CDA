@@ -1,0 +1,98 @@
+.sidebar {
+  width: 240px;
+  background: var(--color-surface);
+  border-right: 1px solid var(--color-border);
+  padding: var(--space-lg) var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.profile {
+  text-align: center;
+}
+
+.avatar {
+  /* lock down the box so swapping the image won’t re-flow anything */
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;          /* always a circle */
+  object-fit: cover;           /* fill the box without distortion */
+  background: var(--color-border); /* optional grey placeholder border */
+}
+
+.name {
+  font-size: 1.25rem;
+  margin: 0;
+}
+
+.email {
+  font-size: 0.875rem;
+  color: var(--color-muted);
+  margin-bottom: var(--space-md);
+}
+
+.logout {
+  padding: var(--space-sm) var(--space-md);
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+.logout:hover {
+  opacity: 0.9;
+}
+
+.cta {
+  text-align: center;
+}
+
+.signupButton {
+  display: block;
+  padding: var(--space-sm) var(--space-md);
+  background: var(--color-primary);
+  color: #fff;
+  border-radius: var(--radius);
+  text-decoration: none;
+  margin-bottom: var(--space-md);
+}
+
+.signupButton:hover {
+  opacity: 0.9;
+}
+
+.loginLink {
+  font-size: 0.875rem;
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.loginLink:hover {
+  text-decoration: underline;
+}
+
+/* Responsive: hide sidebar on small screens */
+@media (max-width: 768px) {
+  .sidebar {
+    display: none;
+  }
+}
+
+.createPostButton {
+  display: inline-block;
+  margin: var(--space-md) 0;
+  padding: var(--space-sm) var(--space-md);
+  background: var(--color-primary);
+  color: #ffffff;
+  font-weight: 500;
+  text-align: center;
+  border-radius: var(--radius);
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.createPostButton:hover {
+  opacity: 0.9;
+}

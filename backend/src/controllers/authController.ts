@@ -60,8 +60,9 @@ export async function login(
       sub:  user.id,
       role: user.role
     });
+    const { passwordHash, ...publicUser } = user;
 
-    res.json({ token });
+    res.json({ token, user: publicUser });
   } catch (err) {
     console.error('Login error:', err);
     res.status(500).json({ error: 'Server error' });
@@ -74,4 +75,25 @@ export function logout(
 ): void {
   // With stateless JWT you typically just let the client delete the token.
   res.json({ message: 'Logged out. Please discard your token client-side.' });
+}
+
+export async function me(req: Request, res: Response): Promise<void> {
+  try {
+    const userId = req.user!.sub;
+
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      res.status(404).json({ error: 'User not found' });
+      return;
+    }
+
+    const { passwordHash, ...publicUser } = user;
+    res.json(publicUser);
+  } catch (err) {
+    console.error('Error in /auth/me:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
 }

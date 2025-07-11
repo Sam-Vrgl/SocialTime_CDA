@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { connectMongo } from './utils/mongo';
+import cors from 'cors';
 import authRoutes from './routes/authRoutes';
 import postsRoutes from './routes/postsRoutes';
 import postImageRoutes from './routes/postImageRoutes';
@@ -8,12 +9,18 @@ import { requireAuth } from './middleware/authMiddleware';
 import { requireAdmin } from './middleware/adminMiddleware';
 
 async function main() {
-  // 1) Connect to Mongo/GridFS
   await connectMongo();
 
   const app = express();
   const prisma = new PrismaClient();
   const PORT = Number(process.env.PORT) || 3000;
+
+    app.use(
+    cors({
+      origin: 'http://localhost:3001',
+      credentials: true,
+    })
+  );
 
   // 2) JSON body parsing
   app.use(express.json());
